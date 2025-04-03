@@ -1,8 +1,13 @@
 import logo from "../../assets/logo.png";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { validatePassword, validateUsername } from "../../utils/formValidate";
 import { useState } from "react";
+import MetaArgs from "../../components/MetaArgs";
+import { loginUser } from "../../api/auth";
+import handleError from "../../utils/handleError";
+import { toast } from "sonner";
+import { useAuth } from "../../store";
 
 export default function Login() {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,16 +16,31 @@ export default function Login() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
+  const navigate = useNavigate();
+  const { setAccessToken } = useAuth();
 
   const togglePassword = () => {
     setIsVisible((prev) => !prev);
   };
 
-  const onFormSubmit = (data) => {
-    console.log(data);
+  const onFormSubmit = async (data) => {
+    try {
+      const res = await loginUser(data);
+      if (res.status === 200) {
+        toast.success(res.data.message);
+        setAccessToken(res.data.accessToken);
+        navigate("/");
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
   return (
     <>
+      <MetaArgs
+        title="Login to InstaShots"
+        content="Login to your InstaShots account"
+      />
       <div className="w-[90vw] md:w-[350px] border rounded-sm border-[#d7d3d3] py-[30px] px-[28px]">
         <div className="flex justify-center">
           <Link to="/">

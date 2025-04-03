@@ -1,5 +1,5 @@
 import logo from "../../assets/logo.png";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import {
   validateEmail,
@@ -8,6 +8,11 @@ import {
   validateUsername,
 } from "../../utils/formValidate";
 import { useState } from "react";
+import MetaArgs from "../../components/MetaArgs";
+import { registerUser } from "../../api/auth";
+import { toast } from "sonner";
+import { useAuth } from "../../store";
+import handleError from "../../utils/handleError";
 
 export default function Register() {
   const [isVisible, setIsVisible] = useState(false);
@@ -16,16 +21,32 @@ export default function Register() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
+  const { setAccessToken } = useAuth();
+  const navigate = useNavigate();
 
   const togglePassword = () => {
     setIsVisible((prev) => !prev);
   };
-  const onFormSubmit = (data) => {
-    console.log(data);
+
+  const onFormSubmit = async (data) => {
+    try {
+      const res = await registerUser(data);
+      if (res.status === 201) {
+        toast.success(res.data.message);
+        setAccessToken(res.data.accessToken);
+        navigate("/");
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
     <>
+      <MetaArgs
+        title="Sign up to InstaShots"
+        content="Get access to InstaShots"
+      />
       <div className="w-[90vw] md:w-[350px] border rounded-sm border-[#d7d3d3] py-[30px] px-[28px]">
         <div className="flex justify-center">
           <Link to="/">
