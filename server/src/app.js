@@ -13,7 +13,7 @@ const corsOptions = {
   methods: ["GET", "POST", "PATCH", "DELETE"],
   credentials: true,
 };
-app.use(cors()); //allows external origin points to communicate with server
+app.use(cors(corsOptions)); //allows external origin points to communicate with server
 app.use(morgan("dev")); //log https requests to terminal
 app.use(json({ limit: "25mb" })); //parses requests to client side in json body format
 app.use(express.urlencoded({ extended: true }));

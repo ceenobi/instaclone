@@ -38,7 +38,7 @@ export const registerUser = async (req, res, next) => {
     user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
     //specify the verifyAccountlink
-    const verifyAccountLink = `${process.env.CLIENT_URL}/account/verify-account/${user._id}/${user.verificationToken}`;
+    const verifyAccountLink = `${process.env.CLIENT_URL}/verify-email/${user._id}/${user.verificationToken}`;
     //send email to user
     await sendMail({
       fullname: user.fullname,
@@ -56,7 +56,8 @@ export const registerUser = async (req, res, next) => {
     //send a response to the client
     res.status(201).json({
       success: true,
-      message: "Account created successfully",
+      message:
+        "Account created successfully, please check you mail in order to verify your account",
       accessToken,
     });
   } catch (error) {
@@ -114,7 +115,7 @@ export const resendEmailVerificationLink = async (req, res, next) => {
     user.verificationToken = verifyAccountToken;
     user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
-    const verifyAccountLink = `${process.env.CLIENT_URL}/account/verify-account/${user._id}/${user.verificationToken}`;
+    const verifyAccountLink = `${process.env.CLIENT_URL}/verify-email/${user._id}/${user.verificationToken}`;
     //send email to user
     await sendMail({
       fullname: user.fullname,
@@ -190,7 +191,7 @@ export const sendForgotPasswordMail = async (req, res, next) => {
     user.passwordResetToken = resetToken;
     user.passwordResetTokenExpires = Date.now() + 30 * 60 * 1000;
     await user.save();
-    const resetPasswordLink = `${process.env.CLIENT_URL}/account/reset-password/${user._id}/${user.passwordResetToken}`;
+    const resetPasswordLink = `${process.env.CLIENT_URL}/auth/reset-password/${user._id}/${user.passwordResetToken}`;
     //send email to user
     await sendMail({
       fullname: user.fullname,

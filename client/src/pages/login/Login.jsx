@@ -79,7 +79,8 @@ export default function Login() {
                 className="input input-md w-full"
                 id="password"
                 {...register("password", {
-                  validate: (value) => validatePassword(value),
+                  validate: (value) =>
+                    validatePassword(value, "Password is required"),
                 })}
               />
             </label>
@@ -88,7 +89,7 @@ export default function Login() {
               className="absolute inset-y-0 right-2 text-sm cursor-pointer"
               onClick={togglePassword}
             >
-              {isVisible ? "Show" : "Hide"}
+              {isVisible ? "Hide" : "Show"}
             </button>
           </div>
           {errors.password && (

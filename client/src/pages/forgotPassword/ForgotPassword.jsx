@@ -3,6 +3,9 @@ import MetaArgs from "../../components/MetaArgs";
 import logo from "../../assets/logo.png";
 import { validateEmail } from "../../utils/formValidate";
 import { Link } from "react-router";
+import { sendForgotPasswordMail } from "../../api/auth";
+import handleError from "../../utils/handleError";
+import { toast } from "sonner";
 
 export default function ForgotPassword() {
   const {
@@ -11,9 +14,17 @@ export default function ForgotPassword() {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const onFormSubmit = (data) => {
-    console.log(data);
+  const onFormSubmit = async (data) => {
+    try {
+      const res = await sendForgotPasswordMail(data);
+      if (res.status === 200) {
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
+
   return (
     <>
       <MetaArgs
@@ -60,7 +71,11 @@ export default function ForgotPassword() {
             type="submit"
             disabled={isSubmitting}
           >
-            Recover
+            {isSubmitting ? (
+              <span className="loading loading-spinner"></span>
+            ) : (
+              "Recover"
+            )}
           </button>
         </form>
       </div>
