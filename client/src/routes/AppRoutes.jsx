@@ -23,6 +23,8 @@ export default function AppRoutes() {
   if (isCheckingAuth) {
     return <LazySpinner />;
   }
+
+
   const routes = [
     {
       path: "auth",

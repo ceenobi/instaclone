@@ -13,7 +13,7 @@ export const PrivateRoutes = ({ children, accessToken, user }) => {
   return children;
 };
 
-export const PublicRoutes = ({ children, accessToken }) => {
+export const PublicRoutes = ({ children, accessToken}) => {
   const location = useLocation();
   if (accessToken) {
     return <Navigate to={location.state?.from || "/"} />;

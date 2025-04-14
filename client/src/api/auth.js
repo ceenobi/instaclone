@@ -47,3 +47,7 @@ export const resetPassword = async (userId, passwordToken, formData) => {
     formData
   );
 };
+
+export const logout = async () => {
+  return await axiosInstance.post("/auth/logout", {});
+};

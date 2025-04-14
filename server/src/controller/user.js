@@ -50,6 +50,7 @@ export const registerUser = async (req, res, next) => {
       btnText: "Verify",
       subject: "Email Verification",
       to: user.email,
+      link: verifyAccountLink,
     });
     //generate accessToken
     const accessToken = generateAccessToken(user._id, user.role);
@@ -127,6 +128,7 @@ export const resendEmailVerificationLink = async (req, res, next) => {
       btnText: "Verify",
       subject: "Email Verification",
       to: user.email,
+      link: verifyAccountLink,
     });
     res
       .status(200)
@@ -196,13 +198,14 @@ export const sendForgotPasswordMail = async (req, res, next) => {
     await sendMail({
       fullname: user.fullname,
       intro: [
-        "You have requested a password reest for your account",
+        "You have requested a password reset for your account",
         "If you did not make this request, kindly ignore this email",
       ],
       instructions: `Click here to reset your password: ${resetPasswordLink}. Link will expire after 30 minutes.`,
       btnText: "Reset Password",
       subject: "Password Reset",
       to: user.email,
+      link: resetPasswordLink,
     });
     res.status(200).json({
       success: true,
@@ -261,4 +264,8 @@ export const resetPassword = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const logout = async (req, res, next) => {
+  res.status(200).json({ message: "Logged out successfully" });
 };

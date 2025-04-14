@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { AuthContext } from ".";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { authenticateUser } from "../api/auth";
+import { authenticateUser, logout } from "../api/auth";
 import { toast } from "sonner";
 
 export default function AuthProvider({ children }) {
@@ -12,10 +12,18 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
 
-  const handleLogout = useCallback(() => {
-    setAccessToken(null);
-    setUser(null);
-    toast.success("You are logged out", { id: "logout" });
+  const handleLogout = useCallback(async () => {
+    try {
+      const res = await logout();
+      if (res.status === 200) {
+        toast.success(res.data.message, { id: "logout" });
+        setAccessToken(null);
+        setUser(null);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("There was an error trying to log you out");
+    }
   }, [setAccessToken]);
 
   useEffect(() => {
