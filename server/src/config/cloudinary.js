@@ -13,13 +13,12 @@ export const uploadToCloudinary = async (file, options = {}) => {
       resource_type: "auto",
       ...options,
     });
-    console.log(uploadResponse);
     return {
       url: uploadResponse.secure_url,
       public_id: uploadResponse.public_id,
     };
   } catch (error) {
-    throw new Error(`Upload failed: ${error.message}`);
+    throw new Error(`Upload failed: ${error.error.message}`);
   }
 };
 

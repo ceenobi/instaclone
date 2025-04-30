@@ -8,6 +8,7 @@ import {
   sendForgotPasswordMail,
   resetPassword,
   logout,
+  followUser,
 } from "../controller/user.js";
 import { verifyToken, authorizeRoles } from "../middleware/auth.js";
 import { rateLimiter } from "../middleware/rateLimiter.js";
@@ -47,9 +48,23 @@ router.patch(
   "/verify-account/:userId/:verificationToken",
   verifyToken,
   authorizeRoles("user", "admin"),
-
+  (req, res, next) => {
+    clearCache("auth_User"); //clear user info
+    next();
+  },
   verifyEmailAccount
 );
 router.patch("/reset-password/:userId/:passwordToken", resetPassword);
+
+router.patch(
+  "/follow/:id",
+  verifyToken,
+  authorizeRoles("user", "admin"),
+  (req, res, next) => {
+    clearCache("auth_User"); //clear user info
+    next();
+  },
+  followUser
+);
 
 export default router;

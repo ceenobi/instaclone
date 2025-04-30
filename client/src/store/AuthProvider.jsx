@@ -19,6 +19,7 @@ export default function AuthProvider({ children }) {
         toast.success(res.data.message, { id: "logout" });
         setAccessToken(null);
         setUser(null);
+        window.location.reload();
       }
     } catch (error) {
       console.error(error);
@@ -54,6 +55,7 @@ export default function AuthProvider({ children }) {
         user,
         isCheckingAuth,
         handleLogout,
+        setUser
       }}
     >
       {children}
