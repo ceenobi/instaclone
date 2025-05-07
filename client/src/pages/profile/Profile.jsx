@@ -201,6 +201,7 @@ export default function Profile() {
             {/* Show posts if:
                 1. Profile is public OR
                 2. User is viewing their own profile OR
+                4>If user profile is false, and owner is same still show
                 3. User is following the profile owner */}
             {active === 0 && (
               <>
