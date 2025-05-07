@@ -67,7 +67,9 @@ export default function Followers() {
           <i className="ri-close-line text-lg"></i>
         </button>
         {loading ? (
-          <span className="loading loading-spinner text-center"></span>
+          <div className="flex justify-center items-center h-[150px] my-4">
+            <span className="loading loading-spinner text-center"></span>
+          </div>
         ) : (
           <>
             {data?.followers?.length === 0 && (
