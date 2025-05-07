@@ -205,17 +205,15 @@ export default function Profile() {
                 3. User is following the profile owner */}
             {active === 0 && (
               <>
-                
-                    <Suspense
-                      fallback={
-                        <div className="text-center mt-20">
-                          <span className="loading loading-bars loading-md text-secondary"></span>
-                        </div>
-                      }
-                    >
-                      <Posts posts={data?.userPostsCreated} />
-                    </Suspense>
-                
+                <Suspense
+                  fallback={
+                    <div className="text-center mt-20">
+                      <span className="loading loading-bars loading-md text-secondary"></span>
+                    </div>
+                  }
+                >
+                  <Posts posts={data?.userPostsCreated} />
+                </Suspense>
               </>
             )}
             {active === 1 && (

@@ -12,6 +12,7 @@ import handleError from "../../../utils/handleError";
 import { toast } from "sonner";
 import { createComment, getComments } from "../../../api/comment";
 import useFetch from "../../../hooks/useFetch";
+import useVideoControl from "../../../hooks/useVideoControl";
 
 export default function Card({ post }) {
   const { currentImageIndex, handlePrevious, handleNext } = useSlideControl(
@@ -31,6 +32,7 @@ export default function Card({ post }) {
   );
   const [likeCount, setLikeCount] = useState(post?.likes?.length || 0);
   const navigate = useNavigate();
+  const { videoRef, isPlaying, handlePlayPause } = useVideoControl();
   const {
     register,
     handleSubmit,
@@ -147,12 +149,23 @@ export default function Card({ post }) {
                       <>
                         <video
                           src={item}
+                          ref={videoRef}
                           controls={false}
                           loop
                           playsInline
                           autoPlay
-                          className="w-full h-auto lg:h-[550px] object-cover aspect-sqaure md:rounded-md"
+                          className="w-full h-full lg:h-[550px] object-cover aspect-sqaure md:rounded-md"
                         />
+                        <button
+                          onClick={handlePlayPause}
+                          className="absolute top-1/2 left-[45%] btn btn-circle btn-ghost hover:bg-transparent opacity-75 hover:opacity-100 text-white border-0"
+                        >
+                          {isPlaying ? (
+                            <i className="ri-pause-line text-6xl"></i>
+                          ) : (
+                            <i className="ri-play-line text-6xl"></i>
+                          )}
+                        </button>
                       </>
                     ) : (
                       <LazyLoadComponent

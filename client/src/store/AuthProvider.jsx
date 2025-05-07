@@ -23,7 +23,9 @@ export default function AuthProvider({ children }) {
       }
     } catch (error) {
       console.error(error);
-      toast.error("There was an error trying to log you out");
+      toast.error("There was an error trying to log you out", {
+        id: "logging out",
+      });
     }
   }, [setAccessToken]);
 
@@ -54,7 +56,7 @@ export default function AuthProvider({ children }) {
         user,
         isCheckingAuth,
         handleLogout,
-        setUser
+        setUser,
       }}
     >
       {children}

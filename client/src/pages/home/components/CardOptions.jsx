@@ -42,7 +42,7 @@ export default function CardOptions({ post, user, accessToken, setUser }) {
         onClose={() => setIsOpen(false)}
       >
         <div className="text-center p-3">
-          {user._id !== post?.userId?._id && (
+          {user?._id !== post?.userId?._id && (
             <>
               <p
                 role="button"
