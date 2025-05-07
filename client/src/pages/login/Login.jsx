@@ -102,7 +102,11 @@ export default function Login() {
             type="submit"
             disabled={isSubmitting}
           >
-            Log In
+            {isSubmitting ? (
+              <span className="loading loading-spinner"></span>
+            ) : (
+              "Log in"
+            )}
           </button>
           <p className="mt-5 text-center">
             <Link to="/auth/forgot-password">Forgot Password?</Link>

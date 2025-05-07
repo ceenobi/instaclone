@@ -1,40 +1,44 @@
-import logo from "../../assets/logo.png";
-import { Link, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../../../store";
+import Modal from "../../../components/Modal";
 import {
   validateEmail,
   validatefullname,
-  validatePassword,
   validateUsername,
-} from "../../utils/formValidate";
-import { useState } from "react";
-import MetaArgs from "../../components/MetaArgs";
-import { registerUser } from "../../api/auth";
+} from "../../../utils/formValidate";
+import { updateProfile } from "../../../api/auth";
+import handleError from "../../../utils/handleError";
 import { toast } from "sonner";
-import { useAuth } from "../../store";
-import handleError from "../../utils/handleError";
 
-export default function Register() {
-  const [isVisible, setIsVisible] = useState(false);
+export default function EditProfile({ setData }) {
+  const [isOpen, setIsOpen] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
   } = useForm();
-  const { setAccessToken } = useAuth();
-  const navigate = useNavigate();
+  const { user, setUser, accessToken } = useAuth();
 
-  const togglePassword = () => {
-    setIsVisible((prev) => !prev);
-  };
+  useEffect(() => {
+    setValue("username", user.username);
+    setValue("email", user.email);
+    setValue("fullname", user.fullname);
+    setValue("bio", user.bio || "");
+  }, [user, setValue]);
 
   const onFormSubmit = async (data) => {
     try {
-      const res = await registerUser(data);
-      if (res.status === 201) {
+      const res = await updateProfile(data, accessToken);
+      if (res.status === 200) {
         toast.success(res.data.message);
-        setAccessToken(res.data.accessToken);
-        navigate("/");
+        setUser(res.data.user);
+        setData((prev) => ({
+          ...prev,
+          user: res.data.user,
+        }));
+        setIsOpen(false);
       }
     } catch (error) {
       handleError(error);
@@ -43,18 +47,28 @@ export default function Register() {
 
   return (
     <>
-      <MetaArgs
-        title="Sign up to InstaShots"
-        content="Get access to InstaShots"
-      />
-      <div className="w-[90vw] md:w-[350px] border rounded-sm border-[#d7d3d3] py-[30px] px-[28px]">
-        <div className="flex justify-center">
-          <Link to="/">
-            <img src={logo} alt="logo" />
-          </Link>
-        </div>
+      {" "}
+      <button
+        className="btn bg-fuchsia-900 text-white btn-soft focus:outline-none w-[120px]"
+        onClick={() => setIsOpen(true)}
+      >
+        Edit profile
+      </button>
+      <Modal
+        isOpen={isOpen}
+        id="editProfileModal"
+        title="Edit Profile"
+        classname="w-[90%] max-w-[500px] mx-auto py-6 px-0"
+      >
+        <button
+          className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          type="button"
+          onClick={() => setIsOpen(false)}
+        >
+          <i className="ri-close-line text-lg"></i>
+        </button>
         <form
-          className="md:max-w-[300px] mx-auto mt-6 bg-white"
+          className="mt-6 w-[90%] max-w-[400px] mx-auto"
           onSubmit={handleSubmit(onFormSubmit)}
         >
           <div className="mb-4">
@@ -114,53 +128,31 @@ export default function Register() {
               </span>
             )}
           </div>
-          <div className="relative">
+          <div className="mb-4">
             <label className="floating-label">
-              <span>Password</span>
-              <input
-                type={isVisible ? "text" : "password"}
-                placeholder="Password"
-                className="input input-md w-full"
-                id="password"
-                {...register("password", {
-                  validate: (value) =>
-                    validatePassword(value, "Password is required"),
-                })}
-              />
+              <span>Bio</span>
+              <textarea
+                type="text"
+                placeholder="Bio"
+                className="textarea textarea-md w-full"
+                id="bio"
+                {...register("bio")}
+              ></textarea>
             </label>
-            <button
-              type="button"
-              className="absolute inset-y-0 right-2 text-sm cursor-pointer"
-              onClick={togglePassword}
-            >
-              {isVisible ? "Hide" : "Show"}
-            </button>
           </div>
-          {errors.password && (
-            <span className="text-xs text-red-600">
-              {errors.password.message}
-            </span>
-          )}
           <button
             className="mt-6 btn  bg-[#8D0D76] w-full text-white"
             type="submit"
             disabled={isSubmitting}
           >
-            {isSubmitting ? <span className="loading loading-spinner"></span> : "Sign Up"}
+            {isSubmitting ? (
+              <span className="loading loading-spinner"></span>
+            ) : (
+              "Update"
+            )}
           </button>
-          <p className="mt-5 text-center">
-            By signing up, you agree to our Term, data policy
-          </p>
         </form>
-      </div>
-      <div className="md:max-w-[350px] my-6 text-center border rounded-sm border-[#d7d3d3] flex items-center justify-center h-[60px]">
-        <p>
-          Already have an account?{" "}
-          <span className="text-[#8D0D76] font-bold">
-            <Link to="/auth/login">Log In</Link>
-          </span>
-        </p>
-      </div>
+      </Modal>
     </>
   );
 }

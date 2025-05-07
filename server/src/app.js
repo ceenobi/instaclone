@@ -18,7 +18,7 @@ const corsOptions = {
 app.use(cors(corsOptions)); //allows external origin points to communicate with server
 app.use(morgan("dev")); //log https requests to terminal
 app.use(json({ limit: "25mb" })); //parses requests to client side in json body format
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 app.disable("x-powered-by"); //disable tech stack
 
 //home server route

@@ -54,3 +54,35 @@ export const getAPost = async (postId, accessToken) => {
     },
   });
 };
+export const deletePost = async (postId, accessToken) => {
+  return await axiosInstance.delete(`/post/delete/${postId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+export const updatePost = async (postId, formData, accessToken) => {
+  return await axiosInstance.patch(`/post/update/${postId}`, formData, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+export const explorePost = async (accessToken) => {
+  return await axiosInstance.get("/post/explore", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+export const getAllPostsByTag = async (tag, page, limit, accessToken) => {
+  return await axiosInstance.get(
+    `/post/get-posts-tags/${tag}?page=${page}&limit=${limit}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+};

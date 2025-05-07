@@ -4,6 +4,12 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendMail } from "../config/emailService.js";
 import { generateAccessToken } from "../config/generateToken.js";
+import Post from "../model/post.js";
+import Comment from "../model/comment.js";
+import {
+  deleteFromCloudinary,
+  uploadToCloudinary,
+} from "../config/cloudinary.js";
 
 export const registerUser = async (req, res, next) => {
   const { username, email, fullname, password } = req.body; //get info from client via form
@@ -302,6 +308,268 @@ export const followUser = async (req, res, next) => {
         ? "User followed"
         : "User unfollowed",
       user,
+      followedUser, //new
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAUser = async (req, res, next) => {
+  const { username } = req.params;
+  try {
+    if (!username) {
+      return next(createHttpError(400, "Username is required"));
+    }
+    const user = await User.findOne({ username });
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+    const [userPostsCreated, userSavedPosts, userLikedPosts] =
+      await Promise.all([
+        Post.find({ userId: user._id.toString() }),
+        Post.find({ savedBy: user._id.toString() }),
+        Post.find({ likes: user._id.toString() }),
+      ]);
+    res
+      .status(200)
+      .json({ user, userPostsCreated, userSavedPosts, userLikedPosts });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changeProfilePicture = async (req, res, next) => {
+  const { profilePicture } = req.body;
+  const { id: userId } = req.user;
+  try {
+    if (!profilePicture) {
+      return next(createHttpError(400, "Profile picture file is required"));
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+    if (user.profilePictureId) {
+      await deleteFromCloudinary(user.profilePictureId);
+    }
+    const uploadImage = await uploadToCloudinary(profilePicture, {
+      folder: "InstaShots/profile",
+      transformation: [
+        { width: 500, height: 500, crop: "fill" },
+        { quality: "auto" },
+        { fetch_format: "webp" },
+      ],
+    });
+    user.profilePicture = uploadImage.url || user.profilePicture;
+    user.profilePictureId = uploadImage.public_id || user.profilePictureId;
+    await user.save();
+    res.status(200).json({
+      success: true,
+      message: "Profile updated",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserProfile = async (req, res, next) => {
+  const { fullname, bio, email, username } = req.body;
+  const { id: userId } = req.user;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+    const data = {
+      fullname: fullname || user.fullname,
+      bio: bio || user.bio,
+      email: email || user.email,
+      username: username || user.username,
+    };
+    const updatedUser = await User.findByIdAndUpdate(userId, data, {
+      new: true,
+    });
+    res.status(200).json({
+      success: true,
+      message: "Profile updated",
+      user: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getRandomUsers = async (req, res, next) => {
+  const { id: userId } = req.user;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+    // Get all users except current user and those they follow
+    const randomUsers = await User.find({
+      _id: {
+        $nin: [userId, ...user.following],
+      },
+    }).limit(5); // Limit to 5 random users
+
+    res.status(200).json({
+      success: true,
+      randomUsers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserFollowers = async (req, res, next) => {
+  const { username } = req.params;
+  try {
+    if (!username) {
+      return next(createHttpError(400, "Username is required"));
+    }
+    const user = await User.findOne({ username });
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+    const followers = await User.find({ _id: { $in: user.followers } });
+    res.status(200).json({
+      success: true,
+      followers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserFollowing = async (req, res, next) => {
+  const { username } = req.params;
+  try {
+    if (!username) {
+      return next(createHttpError(400, "Username is required"));
+    }
+    const user = await User.findOne({ username });
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+    const following = await User.find({ _id: { $in: user.following } });
+    res.status(200).json({
+      success: true,
+      following,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePassword = async (req, res, next) => {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+  const { id: userId } = req.user;
+  try {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return next(createHttpError(400, "Form fields are required"));
+    }
+    const user = await User.findById(userId).select("+password");
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!isPasswordValid) {
+      return next(createHttpError(401, "Invalid current password"));
+    }
+    if (newPassword !== confirmPassword) {
+      return next(
+        createHttpError(401, "New password and confirm password do not match")
+      );
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await User.findByIdAndUpdate(
+      userId,
+      { password: hashedPassword },
+      { new: true }
+    );
+    res.status(200).json({
+      success: true,
+      message: "Password updated!, Login again",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserPrivacy = async (req, res, next) => {
+  const { isPublic } = req.body;
+  const { id: userId } = req.user;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+
+    // Ensure isPublic is saved as a boolean value
+    user.isPublic = Boolean(isPublic);
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      user,
+      message: "Privacy updated!",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAccount = async (req, res, next) => {
+  const { id: userId } = req.user;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+    // Delete profile photo if it exists
+    if (user.profilePhotoId) {
+      await deleteFromCloudinary(user.profilePhotoId);
+    }
+    //find all user posts
+    const userPosts = await Post.find({ userId: userId.toString() });
+    //delete all posts by user
+    for (const posts of userPosts) {
+      if (posts.mediaPublicIds && posts.mediaPublicIds.length > 0) {
+        await Promise.all(
+          posts.mediaPublicIds.map((id) => deleteFromCloudinary(id))
+        );
+      }
+    }
+    await User.findByIdAndDelete(userId);
+    await Post.deleteMany({ userId: userId });
+    await Comment.deleteMany({ user: userId });
+    res.status(200).json({
+      success: true,
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const searchUsers = async (req, res, next) => {
+  const query = req.query.q;
+  try {
+    const users = await User.find({
+      $or: [
+        { username: { $regex: query.trim(), $options: "i" } },
+        { fullname: { $regex: query.trim(), $options: "i" } },
+      ],
+    });
+    res.status(200).json({
+      success: true,
+      users,
     });
   } catch (error) {
     next(error);

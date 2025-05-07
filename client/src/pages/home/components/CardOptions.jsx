@@ -8,9 +8,6 @@ import handleError from "../../../utils/handleError";
 export default function CardOptions({ post, user, accessToken, setUser }) {
   const [isOpen, setIsOpen] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
-  // const [isFollowing, setIsFollowing] = useState(
-  //   user?.following?.includes(post?.userId?._id || "")
-  // ); //check if post owner id is included in logged in user following array - returns boolean
 
   const toggleFollowUser = async (followerId) => {
     setFollowLoading(true);

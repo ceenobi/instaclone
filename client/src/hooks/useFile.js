@@ -1,5 +1,30 @@
 import { useState } from "react";
 
+export function useFile() {
+  const [selectedFile, setSelectedFile] = useState("");
+  const [err, setErr] = useState(null);
+
+  const handleFile = (e) => {
+    const file = e.target.files?.[0];
+    if (file && file.size > 5 * 1000 * 1000) {
+      setErr("File with maximum size of 5MB is allowed");
+      return false;
+    }
+    const reader = new FileReader();
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onerror = () => {
+        console.error("Error reading file:", file.name);
+        setErr("Error reading file");
+      };
+      reader.onloadend = () => {
+        setSelectedFile(reader.result);
+      };
+    }
+  };
+  return { selectedFile, setSelectedFile, err, handleFile, setErr };
+}
+
 export function useFiles() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [err, setErr] = useState(null);

@@ -13,6 +13,15 @@ import VerifyAccount from "../pages/verifyAccount/VerifyAccount";
 import ResetPassword from "../pages/forgotPassword/ResetPassword";
 import PostsProvider from "../store/PostsProvider";
 import Comments from "../pages/comments/Comments";
+import EditPost from "../pages/editPost/EditPost";
+import Profile from "../pages/profile/Profile";
+import Followers from "../pages/profile/followers/Followers";
+import Following from "../pages/profile/following/Following";
+import Settings from "../pages/settings/Settings";
+import UpdatePassword from "../pages/settings/UpdatePassword";
+import AccountPrivacy from "../pages/settings/AccountPrivacy";
+import DeleteAccount from "../pages/settings/DeleteAccount";
+import Tag from "../pages/tag/Tag";
 
 const AuthLayout = lazy(() => import("../layouts/AuthLayout"));
 const RootLayout = lazy(() => import("../layouts/RootLayout"));
@@ -78,6 +87,44 @@ export default function AppRoutes() {
         {
           path: "post/:id",
           element: <Comments />,
+        },
+        {
+          path: "post/edit/:id",
+          element: <EditPost />,
+        },
+        {
+          path: "profile/:username",
+          element: <Profile />,
+        },
+        {
+          path: "profile/:username/followers",
+          element: <Followers />,
+        },
+        {
+          path: "profile/:username/following",
+          element: <Following />,
+        },
+        {
+          path: "tag/:tag",
+          element: <Tag />,
+        },
+        {
+          path: "settings",
+          element: <Settings />,
+          children: [
+            {
+              path: "update-password",
+              element: <UpdatePassword />,
+            },
+            {
+              path: "account-privacy",
+              element: <AccountPrivacy />,
+            },
+            {
+              path: "delete-account",
+              element: <DeleteAccount />,
+            },
+          ],
         },
       ],
     },

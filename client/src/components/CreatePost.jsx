@@ -5,7 +5,7 @@ import { useFiles } from "../hooks/useFile";
 import useTags from "../hooks/useTags";
 import { createPost } from "../api/post";
 import handleError from "../utils/handleError";
-import { useAuth } from "../store";
+import { useAuth, usePosts } from "../store";
 import { toast } from "sonner";
 
 export default function CreatePost() {
@@ -20,6 +20,7 @@ export default function CreatePost() {
   const { selectedFiles, setSelectedFiles, err, handleFiles } = useFiles();
   const { tags, setTags, handleTags, removeTag } = useTags();
   const { accessToken } = useAuth();
+  const { setPosts } = usePosts();
 
   const handlePrev = () => {
     setStep((prev) => prev - 1);
@@ -43,6 +44,7 @@ export default function CreatePost() {
         setSelectedFiles([]);
         setStep(1);
         setIsModalOpen(false);
+        setPosts((prevPosts) => [res.data.post, ...prevPosts]);
       }
     } catch (error) {
       handleError(error);
@@ -52,13 +54,18 @@ export default function CreatePost() {
   return (
     <>
       <div
-        className="tooltip tooltip-right flex gap-3 items-center p-2 cursor-pointer hover:font-bold hover:text-zinc-800 hover:transition duration-150 ease-out rounded-lg z-50 hover:bg-zinc-100"
+        className="hidden tooltip tooltip-right md:flex gap-3 items-center p-2 cursor-pointer hover:font-bold hover:text-zinc-800 hover:transition duration-150 ease-out rounded-lg z-40 hover:bg-zinc-100"
         data-tip="Create Post"
         onClick={() => setIsModalOpen(true)}
       >
         <i className="ri-add-box-line text-2xl"></i>
         <span className="text-lg">Create post</span>
       </div>
+      <i
+        className="ri-add-box-line text-2xl md:hidden"
+        onClick={() => setIsModalOpen(true)}
+        role="button"
+      ></i>
       <Modal
         isOpen={isModalOpen}
         title={step === 1 ? "Create new post" : "Add post details"}
@@ -70,7 +77,7 @@ export default function CreatePost() {
           type="button"
           onClick={() => setIsModalOpen(false)}
         >
-          x
+          <i className="ri-close-line text-lg"></i>
         </button>
         {/* our main content */}
         <form className="mt-4" onSubmit={handleSubmit(formSubmit)}>
@@ -186,7 +193,7 @@ export default function CreatePost() {
                 <div className="flex flex-wrap gap-2 mt-3">
                   {tags.map((tag, index) => (
                     <div
-                      className="badge badge-neutral gap-2 cursor-pointer text-gray-400"
+                      className="badge bg-fuchsia-900 gap-2 cursor-pointer text-gray-400"
                       key={index}
                       onClick={() => removeTag(index)}
                     >

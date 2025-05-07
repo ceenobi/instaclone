@@ -2,12 +2,12 @@ import InstaShots from "../assets/logo_instagram.png";
 import { NavLink } from "react-router";
 import { sidebarLinks } from "../libs/constants";
 import Search from "./Search";
-import Notifications from "./Notifications";
 import CreatePost from "./CreatePost";
 import { useAuth } from "../store";
 
 export default function Sidebar() {
   const { user, handleLogout } = useAuth();
+
   return (
     <div className="hidden md:block min-h-screen fixed z-50 shadow border-r border-gray-200 w-[220px] xl:w-[240px]">
       <div className="flex flex-col min-h-screen justify-between py-6 px-4">
@@ -38,7 +38,6 @@ export default function Sidebar() {
               </NavLink>
             ))}
             <Search />
-            <Notifications />
             <CreatePost />
             <NavLink
               to={`/profile/${user?.username}`}
@@ -91,12 +90,12 @@ export default function Sidebar() {
             className="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full"
           >
             <li>
-              <NavLink to="/settings">
+              <NavLink to="/settings" className="text-lg">
                 <i className="ri-settings-line text-2xl"></i>Settings
               </NavLink>
             </li>
             <li>
-              <a onClick={handleLogout}>
+              <a onClick={handleLogout} className="text-lg">
                 <i className="ri-logout-box-line text-2xl"></i>Logout
               </a>
             </li>

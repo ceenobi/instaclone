@@ -15,3 +15,23 @@ export const getComments = async (postId, accessToken) => {
     },
   });
 };
+
+export const deleteComment = async (commentId, accessToken) => {
+  return await axiosInstance.delete(`/comments/delete/${commentId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+export const likeComment = async (commentId, accessToken) => {
+  return await axiosInstance.patch(
+    `/comments/like/${commentId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+};

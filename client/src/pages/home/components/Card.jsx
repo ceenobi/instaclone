@@ -24,10 +24,10 @@ export default function Card({ post }) {
   });
   const { setPosts } = usePosts();
   const [isPostLiked, setIsPostLiked] = useState(
-    post?.likes?.includes(user?._id)
+    post?.likes.some((id) => id._id === user?._id)
   ); //returns boolean if userId matches the likeId
   const [isPostSaved, setIsPostSaved] = useState(
-    post?.savedBy?.includes(user?._id)
+    post?.savedBy.some((id) => id._id === user?._id)
   );
   const [likeCount, setLikeCount] = useState(post?.likes?.length || 0);
   const navigate = useNavigate();
@@ -63,11 +63,11 @@ export default function Card({ post }) {
     try {
       const res = await handlePostLikes(post?._id, accessToken);
       if (res.status === 200) {
-        toast.success(res.data.message, { id: "likePost" });
+        // toast.success(res.data.message, { id: "likePost" });
         setPosts((prev) =>
           prev.map((item) => (item._id === post?._id ? res.data.post : item))
         );
-        setIsPostLiked(res.data.post.likes.includes(user?._id));
+        setIsPostLiked(res.data.post.likes.some((id) => id._id === user?._id));
         setLikeCount(res.data.post.likes.length);
       }
     } catch (error) {
@@ -80,11 +80,13 @@ export default function Card({ post }) {
     try {
       const res = await handleSavePost(post?._id, accessToken);
       if (res.status === 200) {
-        toast.success(res.data.message, { id: "savePost" });
+        // toast.success(res.data.message, { id: "savePost" });
         setPosts((prev) =>
           prev.map((item) => (item._id === post?._id ? res.data.post : item))
         );
-        setIsPostSaved(res.data.post.savedBy.includes(user?._id));
+        setIsPostSaved(
+          res.data.post.savedBy.some((id) => id._id === user?._id)
+        );
       }
     } catch (error) {
       handleError(error);
@@ -103,7 +105,11 @@ export default function Card({ post }) {
               <div className="avatar avatar-placeholder">
                 <div className="w-12 rounded-full border border-gray-300">
                   {post?.userId?.profilePicture ? (
-                    <img />
+                    <img
+                      src={post?.userId?.profilePicture}
+                      alt={post?.userId?.username}
+                      loading="lazy"
+                    />
                   ) : (
                     <span className="text-3xl">
                       {post?.userId?.username?.charAt(0)}
@@ -136,7 +142,7 @@ export default function Card({ post }) {
                 }`}
               >
                 {index === currentImageIndex && (
-                  <>
+                  <div className="aspect-square group relative">
                     {item.endsWith(".mp4") || item.endsWith(".webm") ? (
                       <>
                         <video
@@ -151,10 +157,10 @@ export default function Card({ post }) {
                     ) : (
                       <LazyLoadComponent
                         image={item}
-                        classname="w-full h-[400px] lg:h-[550px] object-cover aspect-square shrink-0 md:rounded-md"
+                        classname="w-full h-[400px] lg:h-[550px] object-cover  md:rounded-md"
                       />
                     )}
-                  </>
+                  </div>
                 )}
               </div>
             ))}
