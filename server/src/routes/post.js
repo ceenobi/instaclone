@@ -20,6 +20,10 @@ router.post(
   "/create",
   verifyToken,
   authorizeRoles("user", "admin"),
+  (req, res, next) => {
+    clearCache("posts");
+    next();
+  },
   createPost
 );
 
