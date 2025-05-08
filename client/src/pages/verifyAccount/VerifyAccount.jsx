@@ -11,7 +11,7 @@ export default function VerifyAccount() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { userId, verificationToken } = useParams();
-  const { accessToken } = useAuth();
+  const { accessToken, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +40,12 @@ export default function VerifyAccount() {
       isMounted = false;
     };
   }, [accessToken, userId, verificationToken]);
+
+  useEffect(() => {
+    if (user?.isVerified) {
+      navigate("/");
+    }
+  }, [navigate, user?.isVerified]);
 
   if (isLoading) {
     return <DataSpinner />;
