@@ -34,7 +34,7 @@ export const sendMail = async ({
             "To get started with Instashots, please click the button below",
           button: {
             text: btnText || "Visit",
-            link: link || process.env.CLIENT_URL,
+            link: link,
           },
         },
         outro: "Need help, or have questions? Reply to this email",

@@ -56,7 +56,7 @@ export const registerUser = async (req, res, next) => {
       btnText: "Verify",
       subject: "Email Verification",
       to: user.email,
-      link: verifyAccountLink,
+      link: `${process.env.CLIENT_URL}/verify-email/${user._id}/${user.verificationToken}`,
     });
     //generate accessToken
     const accessToken = generateAccessToken(user._id, user.role);
@@ -134,7 +134,7 @@ export const resendEmailVerificationLink = async (req, res, next) => {
       btnText: "Verify",
       subject: "Email Verification",
       to: user.email,
-      link: verifyAccountLink,
+      link: `${process.env.CLIENT_URL}/verify-email/${user._id}/${user.verificationToken}`,
     });
     res
       .status(200)
