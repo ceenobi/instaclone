@@ -193,7 +193,7 @@ export default function CreatePost() {
                 <div className="flex flex-wrap gap-2 mt-3">
                   {tags.map((tag, index) => (
                     <div
-                      className="badge bg-fuchsia-900 gap-2 cursor-pointer text-gray-400"
+                      className="badge bg-black gap-2 cursor-pointer text-gray-400"
                       key={index}
                       onClick={() => removeTag(index)}
                     >

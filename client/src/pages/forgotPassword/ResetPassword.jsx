@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { useForm } from "react-hook-form";
 import MetaArgs from "../../components/MetaArgs";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo1.svg";
 import { validatePassword } from "../../utils/formValidate";
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";

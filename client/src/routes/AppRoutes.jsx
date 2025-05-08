@@ -28,6 +28,7 @@ const RootLayout = lazy(() => import("../layouts/RootLayout"));
 const VerifyAccountLayout = lazy(() =>
   import("../layouts/VerifyAccountLayout")
 );
+const NotFoundPage = lazy(() => import("../pages/NotFoundRoute"));
 
 export default function AppRoutes() {
   const { accessToken, isCheckingAuth, user } = useAuth();
@@ -146,6 +147,14 @@ export default function AppRoutes() {
           element: <VerifyAccount />,
         },
       ],
+    },
+    {
+      path: "*",
+      element: (
+        <Suspense fallback={<LazySpinner />}>
+          <NotFoundPage />
+        </Suspense>
+      ),
     },
   ];
   const router = createBrowserRouter(routes);

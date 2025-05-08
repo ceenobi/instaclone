@@ -87,8 +87,8 @@ export default function Home() {
                 <div className="w-full md:max-w-[450px] 2xl:max-w-[600px] mx-auto">
                   {allPosts?.length > 0 ? (
                     <Suspense fallback={<Skeleton />}>
-                      {allPosts?.map((post, idx) => {
-                        const isLast = idx === allPosts.length - 1;
+                      {allPosts?.map((post, index) => {
+                        const isLast = index === allPosts.length - 1;
                         return (
                           <div
                             ref={isLast ? lastPostRef : undefined}
@@ -112,7 +112,7 @@ export default function Home() {
                 </div>
               )}
               {error && (
-                <span className="text-center text-red-500 my-4">{error}</span>
+                <span className="text-center text-red-500 my-4 text-sm">{error}</span>
               )}
             </div>
           </div>
@@ -145,7 +145,7 @@ export default function Home() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="btn bg-[var(--wine-red)] rounded-md text-white"
+                className="btn bg-red-700 rounded-md text-white"
               >
                 Logout
               </button>

@@ -466,7 +466,7 @@ export default function Comments() {
                   <i
                     className={`${
                       isPostSaved
-                        ? "ri-bookmark-fill text-gray-900"
+                        ? "ri-bookmark-fill text-[var(--wine-red)]"
                         : "ri-bookmark-line"
                     } cursor-pointer text-2xl`}
                     role="button"

@@ -47,12 +47,12 @@ export default function DeleteAccount() {
           </span>
         </div>
         <div className="mt-4 flex gap-4 items-center justify-end">
-          <button className="btn btn-primary" onClick={redirect}>
+          <button className="btn btn-neutral btn-outline" onClick={redirect}>
             Cancel
           </button>
 
           <button
-            className="btn bg-[#8D0D76] text-white w-[120px]"
+            className="btn bg-red-700 rounded-md text-white w-[120px]"
             type="button"
             disabled={isSubmitting}
             onClick={deleteUser}

@@ -232,7 +232,7 @@ export default function Card({ post }) {
             <i
               className={`${
                 isPostSaved
-                  ? "ri-bookmark-fill text-gray-800"
+                  ? "ri-bookmark-fill text-[var(--wine-red)]"
                   : "ri-bookmark-line"
               } text-2xl cursor-pointer`}
               role="button"
