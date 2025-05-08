@@ -5,7 +5,7 @@ import useFetch from "../hooks/useFetch";
 
 export default function PostsProvider({ children }) {
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(3);
+  const [limit, setLimit] = useState(10);
   const { accessToken } = useAuth();
   const { data, setData, loading, error } = useFetch({
     apiCall: getAllPosts,
