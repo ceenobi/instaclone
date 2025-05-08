@@ -106,7 +106,7 @@ export default function Followers() {
                 </Link>
                 <button
                   disabled={user?._id === item._id}
-                  className="btn bg-fuchsia-900 w-[110px] text-white"
+                  className="btn bg-[var(--wine-red)] rounded-md w-[110px] text-white"
                   onClick={() => {
                     toggleFollowUser(item._id);
                     setActive(index);

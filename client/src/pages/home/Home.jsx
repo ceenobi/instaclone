@@ -12,7 +12,7 @@ import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 const Card = lazy(() => import("./components/Card"));
 
 export default function Home() {
-  const { posts, loading, setPage, data: postsData, page } = usePosts();
+  const { posts, loading, setPage, data: postsData, page, error } = usePosts();
   const { user, handleLogout, accessToken, setUser } = useAuth();
   const { data } = useFetch({
     apiCall: getRandomUsers,
@@ -25,34 +25,31 @@ export default function Home() {
   const lastPostRef = useInfiniteScroll({
     loading: loadingMorePosts,
     hasMore: postsData?.pagination?.hasMore,
-    setPage: () => {
-      if (postsData?.pagination?.hasMore) {
-        setLoadingMorePosts(true); 
-        setPage(page + 1);
-      }
-      // setLoadingMorePosts(true);
-      // setPage((prev) => {
-      //   const next =
-      //     typeof pageUpdater === "function" ? pageUpdater(prev) : pageUpdater;
-      //   return next;
-      // });
+    setPage: (pageUpdater) => {
+      setLoadingMorePosts(true);
+      setPage((prev) => {
+        const next =
+          typeof pageUpdater === "function" ? pageUpdater(prev) : pageUpdater;
+        return next;
+      });
     },
   });
-  console.log(page);
 
   useEffect(() => {
     if (!loading) setLoadingMorePosts(false);
-  }, [posts, loading]);
+  }, [allPosts, loading]);
 
   useEffect(() => {
     if (!postsData?.posts) return;
-  
+
     if (page === 1) {
       setAllPosts(postsData.posts);
     } else {
-      setAllPosts(prev => {
-        const existingPostIds = new Set(prev.map(post => post._id));
-        const postsToAdd = postsData.posts.filter(post => !existingPostIds.has(post._id));
+      setAllPosts((prev) => {
+        const existingPostIds = new Set(prev.map((post) => post._id));
+        const postsToAdd = postsData.posts.filter(
+          (post) => !existingPostIds.has(post._id)
+        );
         return [...prev, ...postsToAdd];
       });
     }
@@ -114,6 +111,9 @@ export default function Home() {
                   )}
                 </div>
               )}
+              {error && (
+                <span className="text-center text-red-500 my-4">{error}</span>
+              )}
             </div>
           </div>
           {/* //other */}
@@ -145,7 +145,7 @@ export default function Home() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="btn bg-fuchsia-900 text-white"
+                className="btn bg-[var(--wine-red)] rounded-md text-white"
               >
                 Logout
               </button>
@@ -186,7 +186,7 @@ export default function Home() {
                     </Link>
                     <button
                       disabled={user?._id === item._id}
-                      className="btn bg-fuchsia-900 w-[110px] text-white"
+                      className="btn bg-[var(--wine-red)] rounded-md w-[110px] text-white"
                       onClick={() => {
                         toggleFollowUser(item._id);
                         setActive(index);

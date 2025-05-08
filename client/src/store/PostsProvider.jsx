@@ -7,7 +7,7 @@ export default function PostsProvider({ children }) {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(3);
   const { accessToken } = useAuth();
-  const { data, setData, loading } = useFetch({
+  const { data, setData, loading, error } = useFetch({
     apiCall: getAllPosts,
     params: [page, limit, accessToken],
   });
@@ -30,6 +30,7 @@ export default function PostsProvider({ children }) {
         loading,
         data,
         page,
+        error
       }}
     >
       {children}

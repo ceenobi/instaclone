@@ -5,6 +5,7 @@
 
 @theme {
   --font-rubik: "Rubik Variable", ui-sans-serif, system-ui, sans-serif;
+  --wine-red: #8d0d76;
 }
 
 * {

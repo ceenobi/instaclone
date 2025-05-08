@@ -93,7 +93,7 @@ export default function EditPost() {
         >
           <i className="ri-close-line text-lg"></i>
         </button>
-        <div className="grid grid-cols-12 h-[700px]">
+        <div className="grid grid-cols-12 h-[700px] overflow-hidden">
           <div className="col-span-12 md:col-span-6">
             <>
               <LazyLoadComponent

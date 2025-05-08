@@ -49,7 +49,7 @@ export default function EditProfile({ setData }) {
     <>
       {" "}
       <button
-        className="btn bg-fuchsia-900 text-white btn-soft focus:outline-none w-[120px]"
+        className="btn bg-[var(--wine-red)] rounded-md text-white btn-soft focus:outline-none w-[120px]"
         onClick={() => setIsOpen(true)}
       >
         Edit profile

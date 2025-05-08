@@ -1,4 +1,4 @@
-import logo from "../../../public/logo.svg";
+import logo from "../../assets/logo1.svg";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import {

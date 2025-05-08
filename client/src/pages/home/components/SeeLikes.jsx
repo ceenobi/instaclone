@@ -115,7 +115,7 @@ export default function SeeLikes({ likeCount, post, user }) {
                 {user?._id !== item._id && (
                   <button
                     disabled={user?._id === item._id}
-                    className="btn bg-fuchsia-950 w-[110px] text-white"
+                    className="btn bg-[var(--wine-red)] rounded-md w-[110px] text-white"
                     onClick={() => {
                       toggleFollowUser(item._id);
                       setActive(index);
