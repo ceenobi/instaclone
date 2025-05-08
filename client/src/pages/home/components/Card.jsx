@@ -170,7 +170,7 @@ export default function Card({ post }) {
                     ) : (
                       <LazyLoadComponent
                         image={item}
-                        classname="w-full h-[400px] lg:h-[550px] object-cover  md:rounded-md"
+                        classname="w-full h-[400px] md:h-[550px] object-cover  md:rounded-md"
                       />
                     )}
                   </div>

@@ -1,6 +1,5 @@
 import Comment from "../model/comment.js";
 import Post from "../model/post.js";
-import User from "../model/user.js";
 import createHttpError from "http-errors";
 
 export const createComment = async (req, res, next) => {
