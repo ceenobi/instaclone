@@ -23,6 +23,7 @@ export const sendMail = async ({
           process.env.CLIENT_URL || "https://instaclone-self-six.vercel.app",
       },
     });
+    //ll
     const email = {
       body: {
         name: fullname,
