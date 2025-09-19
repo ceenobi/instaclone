@@ -40,8 +40,8 @@ export default function Tag() {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {data?.posts?.map((post) => (
             <Link
-              key={post.id}
-              to={`/post/${post.id}`}
+              key={post._id}
+              to={`/post/${post._id}`}
               className="aspect-square group relative overflow-hidden rounded-md"
             >
               <img

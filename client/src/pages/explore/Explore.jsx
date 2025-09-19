@@ -12,7 +12,7 @@ export default function Explore() {
     apiCall: explorePost,
     params: [accessToken],
   });
-
+  
   return (
     <>
       <MetaArgs

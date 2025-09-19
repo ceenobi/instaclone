@@ -68,68 +68,71 @@ export default function SeeLikes({ likeCount, post, user }) {
         classname="w-[90%] max-w-[400px] mx-auto py-3 px-0"
         onClose={() => setIsModalOpen(false)}
       >
-        {post?.likes?.length === 0 && (
+        {post?.likes?.length === 0 ? (
           <p className="text-center my-6">
             No likes yet! Be the first one to like.😞
           </p>
-        )}
-        {loading ? (
-          <div className="flex justify-center items-center min-h-[200px]">
-            <span className="loading loading-spinner text-fuchsia-900"></span>
-          </div>
         ) : (
           <>
-            {data?.map((item, index) => (
-              <div
-                className="flex justify-between items-center p-3"
-                key={item._id}
-              >
-                <Link
-                  to={`/profile/${item.username}`}
-                  className="flex items-center"
-                >
-                  <div className="avatar avatar-placeholder">
-                    <div
-                      className={`w-11 rounded-full ${
-                        item.profilePicture ? "" : "border"
-                      }`}
-                    >
-                      {item.profilePicture ? (
-                        <img
-                          src={item.profilePicture}
-                          alt={item.username}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span className="text-3xl">
-                          {item.username.charAt(0)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="ml-2">
-                    <p className="font-semibold">{item.username}</p>
-                    <p className="text-sm">{item.fullname}</p>
-                  </div>
-                </Link>
-                {user?._id !== item._id && (
-                  <button
-                    disabled={user?._id === item._id}
-                    className="btn bg-[var(--wine-red)] rounded-md w-[110px] text-white"
-                    onClick={() => {
-                      toggleFollowUser(item._id);
-                      setActive(index);
-                    }}
-                  >
-                    {active === index && followLoading
-                      ? "Updating..."
-                      : user?.following?.includes(item._id)
-                      ? "Unfollow"
-                      : "Follow"}
-                  </button>
-                )}
+            {loading ? (
+              <div className="flex justify-center items-center min-h-[200px]">
+                <span className="loading loading-spinner text-fuchsia-900"></span>
               </div>
-            ))}
+            ) : (
+              <>
+                {data?.map((item, index) => (
+                  <div
+                    className="flex justify-between items-center p-3"
+                    key={item?._id}
+                  >
+                    <Link
+                      to={`/profile/${item?.username}`}
+                      className="flex items-center"
+                    >
+                      <div className="avatar avatar-placeholder">
+                        <div
+                          className={`w-11 rounded-full ${
+                            item?.profilePicture ? "" : "border"
+                          }`}
+                        >
+                          {item?.profilePicture ? (
+                            <img
+                              src={item?.profilePicture}
+                              alt={item?.username}
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span className="text-3xl">
+                              {item?.username.charAt(0)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="ml-2">
+                        <p className="font-semibold">{item?.username}</p>
+                        <p className="text-sm">{item?.fullname}</p>
+                      </div>
+                    </Link>
+                    {user?._id !== item?._id && (
+                      <button
+                        disabled={user?._id === item?._id}
+                        className="btn bg-[var(--wine-red)] rounded-md w-[110px] text-white"
+                        onClick={() => {
+                          toggleFollowUser(item?._id);
+                          setActive(index);
+                        }}
+                      >
+                        {active === index && followLoading
+                          ? "Updating..."
+                          : user?.following?.includes(item?._id)
+                          ? "Unfollow"
+                          : "Follow"}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </>
+            )}
           </>
         )}
         <button

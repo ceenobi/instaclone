@@ -92,7 +92,7 @@ export default function Home() {
                         return (
                           <div
                             ref={isLast ? lastPostRef : undefined}
-                            key={post._id}
+                            key={post?._id}
                           >
                             <Card post={post} />
                           </div>
@@ -155,46 +155,46 @@ export default function Home() {
                 <h1 className="text-gray-600 font-semibold">
                   Suggested for you
                 </h1>
-                {data?.randomUsers.map((item, index) => (
+                {data?.randomUsers?.map((item, index) => (
                   <div
                     className="my-4 flex justify-between items-center"
-                    key={item._id}
+                    key={item?._id}
                   >
                     <Link
-                      to={`/profile/${item.username}`}
+                      to={`/profile/${item?.username}`}
                       className="flex items-center gap-4"
                     >
                       <div className=" avatar avatar-placeholder">
                         <div className="w-10 rounded-full border border-gray-300">
-                          {item.profilePicture ? (
+                          {item?.profilePicture ? (
                             <img
-                              src={item.profilePicture}
-                              alt={item.username}
+                              src={item?.profilePicture}
+                              alt={item?.username}
                               loading="lazy"
                             />
                           ) : (
                             <span className="text-3xl">
-                              {item.username?.charAt(0)}
+                              {item?.username?.charAt(0)}
                             </span>
                           )}
                         </div>
                       </div>
                       <div className="text-start">
-                        <p className="font-semibold">{item.username}</p>
-                        <p className="text-sm">{item.fullname}</p>
+                        <p className="font-semibold">{item?.username}</p>
+                        <p className="text-sm">{item?.fullname}</p>
                       </div>
                     </Link>
                     <button
-                      disabled={user?._id === item._id}
+                      disabled={user?._id === item?._id}
                       className="btn bg-[var(--wine-red)] rounded-md w-[110px] text-white"
                       onClick={() => {
-                        toggleFollowUser(item._id);
+                        toggleFollowUser(item?._id);
                         setActive(index);
                       }}
                     >
                       {active === index && followLoading
                         ? "Updating..."
-                        : user?.following?.includes(item._id)
+                        : user?.following?.includes(item?._id)
                         ? "Unfollow"
                         : "Follow"}
                     </button>

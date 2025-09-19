@@ -62,6 +62,7 @@ export default function Login() {
                 {...register("username", {
                   validate: (value) => validateUsername(value),
                 })}
+                defaultValue={"icharlee"}
               />
             </label>
             {errors.username && (
@@ -82,6 +83,7 @@ export default function Login() {
                   validate: (value) =>
                     validatePassword(value, "Password is required"),
                 })}
+                defaultValue={"Techstudio!!"}
               />
             </label>
             <button
